@@ -17,30 +17,33 @@ router.get("/", (req, res) => {
 });
 
 // get single post
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
   //   console.log(req.params.id);
   const id = parseInt(req.params.id);
   const post = posts.find((post) => post.id === id);
 
   if (!post) {
-    res
-      .status(404)
-      .json({ message: `A post with the id of ${id} couldn't found` });
-  } else {
-    res.status(200).json(post);
+    const error = new Error(`A post with the id of ${id} couldn't found`);
+    error.status = 404;
+    return next(error);
   }
+
+  res.status(200).json(post);
 });
 
 // new post
-router.post("/", (req, res) => {
+router.post("/", (req, res, next) => {
   //   console.log(req.body);
   const newPost = {
     id: posts.length + 1,
     title: req.body.title,
   };
 
-  if (!newPost.title)
-    return res.status(400).json({ message: "Please include a title" });
+  if (!newPost.title) {
+    const error = new Error(`Please include a title`);
+    error.status = 400;
+    return next(error);
+  }
 
   posts.push(newPost);
 
@@ -48,14 +51,14 @@ router.post("/", (req, res) => {
 });
 
 // update post
-router.put("/:id", (req, res) => {
+router.put("/:id", (req, res, next) => {
   const id = Number(req.params.id);
   const post = posts.find((post) => post.id === id);
 
   if (!post) {
-    return res
-      .status(404)
-      .json({ message: `A post with the id of ${id} couldn't found` });
+    const error = new Error(`A post with the id of ${id} couldn't found`);
+    error.status = 404;
+    return next(error);
   }
 
   post.title = req.body.title;
@@ -64,14 +67,14 @@ router.put("/:id", (req, res) => {
 });
 
 // delete post
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req, res, next) => {
   const id = Number(req.params.id);
   const post = posts.find((post) => post.id === id);
 
   if (!post) {
-    return res
-      .status(404)
-      .json({ message: `A post with the id of ${id} couldn't found` });
+    const error = new Error(`A post with the id of ${id} couldn't found`);
+    error.status = 404;
+    return next(error);
   }
 
   posts = posts.filter((post) => post.id !== id);
