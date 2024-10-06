@@ -2,6 +2,7 @@
   "name": "express-tutorial",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node server",
     "dev": "node --watch --env-file=.env server"
